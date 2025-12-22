@@ -1,0 +1,9 @@
+[tools]
+clang = "21.1"
+cmake = "4.2"
+conan = "2.23"
+ninja = "latest"
+
+[env]
+CMAKE_CXX_COMPILER = "/opt/homebrew/opt/llvm/bin/clang++"
+CMAKE_OSX_SYSROOT = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
