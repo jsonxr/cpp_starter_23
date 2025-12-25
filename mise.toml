@@ -1,9 +1,14 @@
 [tools]
-clang = "21.1"
+#clang = "21.1"
 cmake = "4.2"
-conan = "2.23"
-ninja = "latest"
+#conan = "2.23"
+ninja = "1.13"
 
 [env]
-CMAKE_CXX_COMPILER = "/opt/homebrew/opt/llvm/bin/clang++"
+CMAKE_CXX_COMPILER = """{% if os() == "macos" -%}/opt/homebrew/opt/llvm/bin/clang++{%- elif os() == "windows" -%}C:/Program Files/LLVM/bin/clang++.exe{%- endif %}"""
+
+# Mac Only
 CMAKE_OSX_SYSROOT = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+
+# Windows Only
+RC = "C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/rc.exe"
