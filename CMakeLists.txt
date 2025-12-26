@@ -1,14 +1,13 @@
-cmake_minimum_required(VERSION 4.0.2)
+cmake_minimum_required(VERSION 3.28)
 
 project(MyProject LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
-add_executable(MyApp main.cpp)
-target_sources(MyApp
-  PRIVATE
-  FILE_SET cxx_modules TYPE CXX_MODULES FILES
-    hello.cpp
-)
+# Check Features
+include(cmake/FeatureChecks.cmake)
+include(cmake/DisableExceptions.cmake)
+
+add_subdirectory(src)
+#add_subdirectory(tests)

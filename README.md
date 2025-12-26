@@ -51,6 +51,8 @@ winget install LLVM.LLVM --source winget # 21.1.8
 winget install --id Microsoft.VisualStudio.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64" --source winget # rc.exe
 winget install Microsoft.VisualStudioCode --source winget
 winget install Kitware.CMake --source winget
+winget install python
+
 # Open new powershell 7 (not system powershell)
 mise trust
 mise install
@@ -63,4 +65,23 @@ mise activate pwsh | Out-String | Invoke-Expression
 cmake --preset Debug
 cmake --build --preset Debug
 ./build/Debug/MyApp.exe
+```
+
+# Web
+
+```shell
+#--------------------------
+# Install Pre-requisites
+#--------------------------
+git clone https://github.com/google/dawn.git libs/dawn
+git clone https://github.com/emscripten-core/emsdk.git libs/emsdk
+cd libs/emsdk
+./emsdk install 4.0.22
+./emsdk activate 4.0.22
+
+#--------------------------
+# Build
+#--------------------------
+source libs/emsdk/emsdk_env.sh
+cmake --preset wasm
 ```
