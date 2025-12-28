@@ -5,7 +5,7 @@ cmake = "4.2"
 ninja = "1.13"
 
 [env]
-CMAKE_CXX_COMPILER = """{% if os() == "macos" -%}/opt/homebrew/opt/llvm/bin/clang++{%- elif os() == "windows" -%}C:/Program Files/LLVM/bin/clang++.exe{%- endif %}"""
+CMAKE_CXX_COMPILER = """{% if os() == "macos" -%}/opt/homebrew/opt/llvm/bin/clang++{%- elif os() == "windows" -%}C:/Program Files/LLVM/bin/clang++.exe{%- elif os() == "linux" -%}/opt/llvm-project/build/bin/clang{%- endif %}"""
 
 # Mac Only
 CMAKE_OSX_SYSROOT = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"

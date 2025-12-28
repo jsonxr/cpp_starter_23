@@ -31,7 +31,7 @@ conan profile detect --force
 #-------------
 cmake --preset Debug
 cmake --build --preset Debug
-build/Debug/MyApp
+./build/Debug/MyApp
 
 #conan install . --output-folder=build --build=missing
 # These don't work yet, but we want them to...
@@ -67,6 +67,44 @@ cmake --build --preset Debug
 ./build/Debug/MyApp.exe
 ```
 
+# Ubuntu
+
+```shell
+
+Not yet supported.
+
+#--------------------------
+# Install Pre-requisites
+#--------------------------
+sudo apt update
+# zsh
+sudo apt install zsh libc++-dev libc++abi-dev
+
+
+chsh -s $(which zsh) # The logout/login
+# ohmyzsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# llvm 21.1
+sudo apt install -y build-essential ninja-build
+git clone --branch llvmorg-21.1.8 --depth 1 https://github.com/llvm/llvm-project.git
+sudo mv llvm-project /opt
+mkdir /opt/llvm-project/build && cd /opt/llvm-project/build
+cmake -G Ninja "-DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra" -DCMAKE_BUILD_TYPE=Release ../llvm
+ninja # Wait an hour...
+ninja install
+# mise
+curl https://mise.run | sh
+echo "eval \"\$(/home/parallels/.local/bin/mise activate zsh)\"" >> "/home/parallels/.zshrc"
+mise trust
+mise install
+
+#--------------------------
+# Build
+#--------------------------
+cmake --preset Debug
+cmake --build --preset Debug
+```
+
 # Web
 
 ```shell
@@ -84,4 +122,6 @@ cd libs/emsdk
 #--------------------------
 source libs/emsdk/emsdk_env.sh
 cmake --preset wasm
+cmake --build --preset wasm
+npx http-server build/wasm/www
 ```
