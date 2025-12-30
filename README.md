@@ -71,13 +71,19 @@ cmake --build --preset Debug
 #--------------------------
 # Install Pre-requisites
 #--------------------------
-winget install Microsoft.PowerShell --source winget
-winget install jdx.mise --source winget
+#winget install Microsoft.PowerShell --source winget
+#winget install jdx.mise --source winget
 winget install Git.Git --source winget
-winget install LLVM.LLVM --source winget # 21.1.8
+#winget install LLVM.LLVM --source winget # 21.1.8
 winget install --id Microsoft.VisualStudio.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64" --source winget # rc.exe
-winget install Microsoft.VisualStudioCode --source winget
-winget install Kitware.CMake --source winget
+
+# Component.Linux.CMake (C++ CMake tools for Linux and Mac)
+# Microsoft.VisualStudio.Component.VC.CLI.Support (C++/CLI support (Latest MSVC))
+# Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Llvm.Clang (C++ Clang tools for Windows (20.1.8 - x64/x86))
+
+#winget install Microsoft.VisualStudioCode --source winget
+#winget install Kitware.CMake --source winget
+winget install --id Ninja-build.Ninja --source winget
 winget install python
 
 # Open new powershell 7 (not system powershell)
@@ -93,6 +99,8 @@ cmake --preset Debug
 cmake --build --preset Debug
 ./build/Debug/MyApp.exe
 ```
+
+[VisualStudio Component ids](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community?view=visualstudio&viewFallbackFrom=vs-2026&preserve-view=true)
 
 # Ubuntu
 

@@ -6,15 +6,20 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "$env{CMAKE_CXX_COMPILER}",
-        "CMAKE_OSX_SYSROOT": "$env{CMAKE_OSX_SYSROOT}"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
       "name": "Debug",
+      "inherits": "default"
+    },
+    {
+      "name": "win64",
       "inherits": "default",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang.exe",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang++.exe",
+        "RC": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/rc.exe"
       }
     },
     {
@@ -36,6 +41,10 @@
     {
       "name": "Debug",
       "configurePreset": "Debug"
+    },
+    {
+      "name": "win64",
+      "configurePreset": "win64"
     },
     {
       "name": "wasm",
