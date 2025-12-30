@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const PORT = process.argv[2] || 8080;
+const BUILD_DIR = path.join(__dirname, '..', 'build', 'wasm', 'www');
+
+// MIME types
+const mimeTypes = {
+  '.html': 'text/html',
+  '.js': 'application/javascript',
+  '.wasm': 'application/wasm',
+  '.ico': 'image/x-icon'
+};
+
+const server = http.createServer((req, res) => {
+  // Set headers required for SharedArrayBuffer/pthreads
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+
+  // Handle root path
+  const filePath = path.join(BUILD_DIR, req.url === '/' ? 'index.html' : req.url);
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = mimeTypes[ext] || 'text/plain';
+
+  // Read and serve file
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('404 Not Found');
+      return;
+    }
+
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Content-Length': data.length
+    });
+    res.end(data);
+  });
+});
+
+// Check if build directory exists
+if (!fs.existsSync(BUILD_DIR)) {
+  console.error(`Error: Build directory ${BUILD_DIR} not found`);
+  console.error('Run ./bin/wasm.sh first to build the WebAssembly project');
+  process.exit(1);
+}
+
+server.listen(PORT, () => {
+  console.log(`Serving WebAssembly with pthread support at http://localhost:${PORT}`);
+  console.log('Required headers for SharedArrayBuffer:');
+  console.log('  - Cross-Origin-Embedder-Policy: require-corp');
+  console.log('  - Cross-Origin-Opener-Policy: same-origin');
+  console.log(`Serving files from: ${BUILD_DIR}`);
+  console.log('Press Ctrl+C to stop');
+});

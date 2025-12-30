@@ -25,9 +25,9 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_SYSTEM_NAME": "Emscripten",
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/libs/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "CMAKE_C_COMPILER": "${sourceDir}/libs/emsdk/upstream/emscripten/emcc",
-        "CMAKE_CXX_COMPILER": "${sourceDir}/libs/emsdk/upstream/emscripten/em++",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_C_COMPILER": "${sourceDir}/emsdk/upstream/emscripten/emcc",
+        "CMAKE_CXX_COMPILER": "${sourceDir}/emsdk/upstream/emscripten/em++",
         "CONAN_HOST_PROFILE": "${sourceDir}/profiles/emscripten"
       }
     }

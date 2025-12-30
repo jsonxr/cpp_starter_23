@@ -1,11 +1,38 @@
 
-# Mac
 
+# Web
+
+<i>Instructions are for macOS; they will need to be adapted to work on Linux and Windows.</i>
+
+```shell
+#--------------------------
+# Install Pre-requisites
+#--------------------------
+#bin/setup.sh --chrome=143.0.7499.170 --emsdk=4.0.22
+bin/setup.sh --chrome=144.0.7559.31 --emsdk=4.0.22
+
+# To show to versions of chrome and emsdk
+bin/setup.sh --chrome-channel=stable
+bin/setup.sh --chrome-channel=beta
+```
+
+```shell
+#--------------------------
+# Build
+#--------------------------
+cmake --preset wasm
+cmake --build --preset wasm
+npx http-server build/wasm/www
+```
+
+# Mac
 
 ```shell
 #-------------
 # Install...
 #-------------
+bin/setup.sh --chrome=144.0.7559.31 --emsdk=4.0.22
+
 curl https://mise.run | sh # mise
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # Homebrew
 brew install llvm
@@ -71,7 +98,7 @@ cmake --build --preset Debug
 
 ```shell
 
-Not yet supported.
+<i>Not yet supported.</i>
 
 #--------------------------
 # Install Pre-requisites
@@ -105,23 +132,9 @@ cmake --preset Debug
 cmake --build --preset Debug
 ```
 
-# Web
 
-```shell
-#--------------------------
-# Install Pre-requisites
-#--------------------------
-git clone https://github.com/google/dawn.git libs/dawn
-git clone https://github.com/emscripten-core/emsdk.git libs/emsdk
-cd libs/emsdk
-./emsdk install 4.0.22
-./emsdk activate 4.0.22
 
-#--------------------------
-# Build
-#--------------------------
-source libs/emsdk/emsdk_env.sh
-cmake --preset wasm
-cmake --build --preset wasm
-npx http-server build/wasm/www
+
+```
+
 ```

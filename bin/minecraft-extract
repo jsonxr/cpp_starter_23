@@ -1,0 +1,88 @@
+#!/bin/sh
+
+help () {
+  echo "Usage: minecraft-extract [--version=<version>|latest] [--force] <output_dir>"
+  echo "       minecraft-extract <output_dir>  (defaults to latest version)"
+  echo
+  versions=`ls -t ~/Library/Application\ Support/minecraft/versions/ | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V -r`
+  echo "Available versions: " $versions
+  versions=($versions)
+  latest=${versions[0]}
+  echo "latest: $latest"
+  echo
+  echo "Options:"
+  echo "  --version=<version>  Specify Minecraft version (default: latest)"
+  echo "  --force              Extract even if output directory exists"
+  echo "  --help, -h           Show this help message"
+  echo
+  echo "Examples:"
+  echo "  minecraft-extract extracted                         # uses latest version"
+  echo "  minecraft-extract --version=latest extracted       # uses latest version"
+  echo "  minecraft-extract --version=$latest extracted      # uses specific version"
+  echo "  minecraft-extract --force --version=1.21.8 assets  # overwrite existing directory"
+  echo
+  exit 1
+}
+
+# Parse arguments
+MINECRAFT_VERSION=""
+OUTPUT_DIR=""
+FORCE_EXTRACT=false
+
+for arg in "$@"; do
+  case $arg in
+    --version=*)
+      MINECRAFT_VERSION="${arg#*=}"
+      ;;
+    --force)
+      FORCE_EXTRACT=true
+      ;;
+    --help|-h)
+      help
+      ;;
+    *)
+      if [ "$OUTPUT_DIR" == "" ]; then
+        OUTPUT_DIR="$arg"
+      else
+        echo "Error: Too many arguments"
+        help
+      fi
+      ;;
+  esac
+done
+
+# Get available versions and latest
+versions=`ls -t ~/Library/Application\ Support/minecraft/versions/ | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V -r`
+versions=($versions)
+latest=${versions[0]}
+
+# Set default version to latest if not specified
+if [ "$MINECRAFT_VERSION" == "" ]; then
+  MINECRAFT_VERSION="$latest"
+elif [ "$MINECRAFT_VERSION" == "latest" ]; then
+  MINECRAFT_VERSION="$latest"
+fi
+
+# Validate arguments
+if [ "$OUTPUT_DIR" == "" ]; then
+  echo "Error: Output directory not specified"
+  help
+fi
+if [ -d "$OUTPUT_DIR" ] || [ -f "$OUTPUT_DIR" ]; then
+  if [ "$FORCE_EXTRACT" = false ]; then
+    echo "Error: Directory or file '$OUTPUT_DIR' already exists"
+    echo "Use --force to extract anyway"
+    echo
+    exit 1
+  else
+    echo "Warning: '$OUTPUT_DIR' already exists, extracting anyway due to --force flag"
+  fi
+fi
+
+mkdir -p $OUTPUT_DIR
+
+if [ "$FORCE_EXTRACT" = true ]; then
+  unzip -o ~/Library/Application\ Support/minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar "assets/minecraft/*" "data/minecraft/*" "pack.png" "version.json" -d $OUTPUT_DIR
+else
+  unzip ~/Library/Application\ Support/minecraft/versions/$MINECRAFT_VERSION/$MINECRAFT_VERSION.jar "assets/minecraft/*" "data/minecraft/*" "pack.png" "version.json" -d $OUTPUT_DIR
+fi

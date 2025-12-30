@@ -1,4 +1,6 @@
 build
 .idea
 compile_commands.json
-libs
+dawn
+emsdk
+bin/assets/*
