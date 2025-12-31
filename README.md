@@ -1,4 +1,8 @@
 
+- [building dawn](https://dawn.googlesource.com/dawn/+/HEAD/docs/building.md)
+- [dawn quickstart cmake](https://github.com/google/dawn/blob/main/docs/quickstart-cmake.md)
+- [windows build instructions](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/windows_build_instructions.md)
+
 
 # Web
 
@@ -27,12 +31,9 @@ npx http-server build/wasm/www
 
 # Mac
 
-```shell
-#-------------
-# Install...
-#-------------
-bin/setup.sh --chrome=144.0.7559.31 --emsdk=4.0.22
+### Setup
 
+```shell
 curl https://mise.run | sh # mise
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # Homebrew
 brew install llvm
@@ -52,14 +53,16 @@ mise trust
 cmake --version # See note above
 
 conan profile detect --force
+```
 
-#-------------
-# Build
-#-------------
+### Build
+```shell
+# Run once
+bin/setup.sh --chrome=144.0.7559.31 --emsdk=4.0.22
 cmake --preset Debug
+# change/build/run
 cmake --build --preset Debug
 ./build/Debug/MyApp
-
 #conan install . --output-folder=build --build=missing
 # These don't work yet, but we want them to...
 #conan create . --build=missing -s compiler=clang -s compiler.version=21 -s compiler.libcxx=libc++ -s compiler.cppstd=20
@@ -67,16 +70,31 @@ cmake --build --preset Debug
 
 # Windows
 
+### Install Pre-Requisites
 ```shell
-#--------------------------
-# Install Pre-requisites
-#--------------------------
 #winget install Microsoft.PowerShell --source winget
 #winget install jdx.mise --source winget
 winget install Git.Git --source winget
 #winget install LLVM.LLVM --source winget # 21.1.8
-winget install --id Microsoft.VisualStudio.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64" --source winget # rc.exe
+winget install --id Microsoft.VisualStudio.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.ATL Microsoft.VisualStudio.Component.VC.ATL.ARM64" --source winget # rc.exe
 
+
+--add Microsoft.VisualStudio.Workload.NativeDesktop ^
+--add Microsoft.VisualStudio.Component.VC.ATLMFC ^
+--add Microsoft.VisualStudio.Component.VC.Tools.ARM64 ^
+#--add Microsoft.VisualStudio.Component.VC.ATL.ARM64 ^
+--add Microsoft.VisualStudio.Component.VC.MFC.ARM64 ^
+--includeRecommended
+
+Microsoft.VisualStudio.Component.VC.ATL
+Microsoft.VisualStudio.Component.VC.ATL.ARM64
+
+Microsoft.VisualStudio.Component.VC.MFC.ARM64
+?Microsoft.VisualStudio.Component.VC.CMake.Project
+?Microsoft.VisualStudio.Component.Windows11SDK.22621
+?Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre
+
+#winget install GoLang.Go --source winget
 # Component.Linux.CMake (C++ CMake tools for Linux and Mac)
 # Microsoft.VisualStudio.Component.VC.CLI.Support (C++/CLI support (Latest MSVC))
 # Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Llvm.Clang (C++ Clang tools for Windows (20.1.8 - x64/x86))
@@ -89,28 +107,103 @@ winget install python
 # Open new powershell 7 (not system powershell)
 mise trust
 mise install
+```
 
+```shell
+# Attempt 2
+winget install Git.Git --source winget
+winget install --id Microsoft.VisualStudio.2022.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --includeRecommended" --source winget
+# Optional
+winget install Microsoft.VisualStudioCode --source winget
+```
+
+### Install dawn
+
+You need to make sure you run this from one of the "Native Tools Command Prompt for VS".  If you don't, you will have struggles getting dawn to download and compile.
+
+```shell
+bin/setup.cmd
+# git init dawn
+# cd dawn
+# git remote add origin https://dawn.googlesource.com/dawn
+# git fetch --depth 1 origin 9bd45159352393f34bf70b4558d1ce75c2b1a574
+# git checkout FETCH_HEAD
+# python tools/fetch_dawn_dependencies.py
+
+# cmake -S . -B out/Release -DDAWN_FETCH_DEPENDENCIES=ON -DDAWN_ENABLE_INSTALL=ON -DCMAKE_BUILD_TYPE=Release   -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
+# cmake --build out/Release --config Release --verbose
+#cmake --install out/Release --prefix install/Release
+
+
+# chatgpt ninja
+# rmdir /s /q out
+# rmdir /s /q install
+# cmake -S . -B out -G "Ninja Multi-Config" `
+#   -DDAWN_FETCH_DEPENDENCIES=ON `
+#   -DDAWN_ENABLE_INSTALL=ON
+# cmake --build out --config Release
+# cmake --install out --config Release --prefix install/Release
+```
+
+### Build
+```shell
 #--------------------------
 # Build
 #--------------------------
-$env:PATH = "$env:LOCALAPPDATA\mise\shim;$env:PATH"
-mise activate pwsh | Out-String | Invoke-Expression
+# $env:PATH = "$env:LOCALAPPDATA\mise\shim;$env:PATH"
+# mise activate pwsh | Out-String | Invoke-Expression
+
+bin\setup.cmd
+cmake -S . -B build/win
+cmake --build build/win
+
+#cmake -S . -B build/win -D CMAKE_BUILD_TYPE=Release -D CMAKE_MODULE_PATH=C:/projects/cpp_starter_23/build/dawn-arm64/out/lib/cmake
+
+
+cmake -S . -B build/win -D CMAKE_BUILD_TYPE=Release -D CMAKE_MODULE_PATH=C:/projects/cpp_starter_23/build/dawn-arm64/out -D Dawn_DIR=C:/projects/cpp_starter_23/build/dawn-arm64/out/lib/cmake/Dawn
+
+
+
+
+
 cmake --preset Debug
 cmake --build --preset Debug
 ./build/Debug/MyApp.exe
 ```
 
-[VisualStudio Component ids](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community?view=visualstudio&viewFallbackFrom=vs-2026&preserve-view=true)
+
+
+### Build Experimenting
+
+```shell
+cmake -S . -B out -G "Ninja Multi-Config" -DDAWN_FETCH_DEPENDENCIES=ON -DDAWN_ENABLE_INSTALL=ON
+cmake --build out --config Release --verbose
+cmake --install out --config Release --prefix install/Release
+```
+
+
+
+### Notes
+
+- If you do this from a network folder or a folder mapped from a virtual machine, you will need to explicitly authorize git for every folder with a git. dawn has a lot of these. for example, on Parallels if you map e: to a folder on your mac mac...
+
+```sh
+#~/.gitconifg
+[safe]
+  directory = E:/cpp_blockworld_webgpu/dawn
+  directory = E:/cpp_blockworld_webgpu/dawn/third_party/abseil-cpp
+  directory = E:/cpp_blockworld_webgpu/dawn/third_party/angle
+  #...etc
+```
+- [build.cmd](https://github.com/mmozeiko/build-dawn/tree/main) - original source of build.cmd
+- [VisualStudio Component ids](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community?view=visualstudio&viewFallbackFrom=vs-2026&preserve-view=true)
 
 # Ubuntu
 
-```shell
-
 <i>Not yet supported.</i>
 
-#--------------------------
-# Install Pre-requisites
-#--------------------------
+### Install Pre-requisites
+```shell
 sudo apt update
 # zsh
 sudo apt install zsh libc++-dev libc++abi-dev
@@ -132,17 +225,10 @@ curl https://mise.run | sh
 echo "eval \"\$(/home/parallels/.local/bin/mise activate zsh)\"" >> "/home/parallels/.zshrc"
 mise trust
 mise install
+```
 
-#--------------------------
-# Build
-#--------------------------
+### Build
+```shell
 cmake --preset Debug
 cmake --build --preset Debug
-```
-
-
-
-
-```
-
 ```

@@ -1,4 +1,3 @@
-#include "hello.h"
 #include <iostream>
 
 #include <GLFW/glfw3.h>
@@ -162,7 +161,6 @@ int main()
 {
   std::cout << "Hello from C++23 and CMake!" << std::endl;
 
-  hello();
   Init();
   Start();
 }

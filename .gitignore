@@ -2,5 +2,6 @@ build
 .idea
 compile_commands.json
 dawn
+dawn*
 emsdk
 bin/assets/*
