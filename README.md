@@ -36,7 +36,7 @@ npx http-server build/wasm/www
 ```shell
 curl https://mise.run | sh # mise
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # Homebrew
-brew install llvm
+brew install llvm node
 
 #-------------
 # Configure
@@ -72,54 +72,25 @@ cmake --build --preset Debug
 
 ### Install Pre-Requisites
 ```shell
-#winget install Microsoft.PowerShell --source winget
-#winget install jdx.mise --source winget
-winget install Git.Git --source winget
-#winget install LLVM.LLVM --source winget # 21.1.8
-winget install --id Microsoft.VisualStudio.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.ATL Microsoft.VisualStudio.Component.VC.ATL.ARM64" --source winget # rc.exe
-
-
---add Microsoft.VisualStudio.Workload.NativeDesktop ^
---add Microsoft.VisualStudio.Component.VC.ATLMFC ^
---add Microsoft.VisualStudio.Component.VC.Tools.ARM64 ^
-#--add Microsoft.VisualStudio.Component.VC.ATL.ARM64 ^
---add Microsoft.VisualStudio.Component.VC.MFC.ARM64 ^
---includeRecommended
-
-Microsoft.VisualStudio.Component.VC.ATL
-Microsoft.VisualStudio.Component.VC.ATL.ARM64
-
-Microsoft.VisualStudio.Component.VC.MFC.ARM64
-?Microsoft.VisualStudio.Component.VC.CMake.Project
-?Microsoft.VisualStudio.Component.Windows11SDK.22621
-?Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre
-
-#winget install GoLang.Go --source winget
-# Component.Linux.CMake (C++ CMake tools for Linux and Mac)
-# Microsoft.VisualStudio.Component.VC.CLI.Support (C++/CLI support (Latest MSVC))
-# Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Llvm.Clang (C++ Clang tools for Windows (20.1.8 - x64/x86))
-
-#winget install Microsoft.VisualStudioCode --source winget
-#winget install Kitware.CMake --source winget
-winget install --id Ninja-build.Ninja --source winget
 winget install python
-
-# Open new powershell 7 (not system powershell)
-mise trust
-mise install
+winget install Git.Git --source winget
+winget install --id Ninja-build.Ninja --source winget
+winget install --id Microsoft.VisualStudio.2022.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --includeRecommended" --source winget
 ```
 
+### Optional
 ```shell
-# Attempt 2
-winget install Git.Git --source winget
-winget install --id Microsoft.VisualStudio.2022.Community --exact --override "--wait --passive --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --add Microsoft.VisualStudio.Component.Windows11SDK.26100 --includeRecommended" --source winget
-# Optional
 winget install Microsoft.VisualStudioCode --source winget
+winget install GoLang.Go --source winget
+winget install Kitware.CMake --source winget
+winget install Microsoft.PowerShell --source winget
+winget install jdx.mise --source winget
+winget install LLVM.LLVM --source winget # 21.1.8
 ```
 
 ### Install dawn
 
-You need to make sure you run this from one of the "Native Tools Command Prompt for VS".  If you don't, you will have struggles getting dawn to download and compile.
+<i>You need to make sure you run this from one of the "Native Tools Command Prompt for VS".  If you don't, you will have struggles getting dawn to download and compile.</i>
 
 ```shell
 bin/setup.cmd
@@ -154,21 +125,25 @@ bin/setup.cmd
 # mise activate pwsh | Out-String | Invoke-Expression
 
 bin\setup.cmd
-cmake -S . -B build/win
-cmake --build build/win
+cmake --preset win64
+cmake --build --preset win64 --parallel
+./build/win64/MyApp.exe
+
+#cmake -S . -B build/win
+#cmake --build build/win
 
 #cmake -S . -B build/win -D CMAKE_BUILD_TYPE=Release -D CMAKE_MODULE_PATH=C:/projects/cpp_starter_23/build/dawn-arm64/out/lib/cmake
 
 
-cmake -S . -B build/win -D CMAKE_BUILD_TYPE=Release -D CMAKE_MODULE_PATH=C:/projects/cpp_starter_23/build/dawn-arm64/out -D Dawn_DIR=C:/projects/cpp_starter_23/build/dawn-arm64/out/lib/cmake/Dawn
+#cmake -S . -B build/win -D CMAKE_BUILD_TYPE=Release -D CMAKE_MODULE_PATH=C:/projects/cpp_starter_23/build/dawn-arm64/out -D Dawn_DIR=C:/projects/cpp_starter_23/build/dawn-arm64/out/lib/cmake/Dawn
 
 
 
 
 
-cmake --preset Debug
-cmake --build --preset Debug
-./build/Debug/MyApp.exe
+#cmake --preset Debug
+#cmake --build --preset Debug
+#./build/Debug/MyApp.exe
 ```
 
 

@@ -56,7 +56,7 @@ if not exist dawn (
   rem --------------------------------------------------------------------------
   rem fetch dependencies
   rem --------------------------------------------------------------------------
-  call python "dawn/tools/fetch_dawn_dependencies.py" --directory dawn
+  rem call python "dawn/tools/fetch_dawn_dependencies.py" --directory dawn
   
   rem --------------------------------------------------------------------------
   rem patches
